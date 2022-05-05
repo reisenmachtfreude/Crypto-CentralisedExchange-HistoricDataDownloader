@@ -27,11 +27,11 @@ with open(path_to_credentials) as f:
 
 
 data_folder = os.path.join(project_dir, 'data','downloads')
-start_date = exchange_ccxt_obj.parse8601('2019-01-10 00:00:00')
+start_date = exchange_ccxt_obj.parse8601('2017-01-10 00:00:00')
 end_date = datetime.datetime.now().timestamp() * 1000
 
 pairs = ['BTCUSD']
 for pair in pairs:
 
 	downloader = BitfinexHistoricDataExporter(data_folder, exchange_ccxt_obj)
-	downloader.downloadData('BTC/USDT', start_date, end_date)
+	downloader.downloadData('BTC/USDT', start_date, end_date, candle_size_str='1d')
