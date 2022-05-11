@@ -11,7 +11,7 @@ sys.path.append(workspace_root)
 from src.bitfinexHistoricCandleConverter import BitfinexHistoricCandleConverter
 
 # Convert Bitfinex downloaded data to ONE pickle binary file
-download_data_folder = os.path.join(project_dir, 'data','downloads')
+download_data_folder = os.path.join(project_dir, 'data','downloads','bitfinex-BTC_USDT-1m')
 pickle_data_folder = os.path.join(project_dir, 'data','pickle')
 converter = BitfinexHistoricCandleConverter()
 pickle_file = converter.convertToPickle('BTC_USDT',download_data_folder, pickle_data_folder)

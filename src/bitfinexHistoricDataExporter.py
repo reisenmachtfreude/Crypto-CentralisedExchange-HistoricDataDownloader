@@ -1,9 +1,7 @@
 import time
 import os
-import sys
 import datetime
-import pickle
-import glob, json
+import json
 import time
 
 
@@ -13,6 +11,7 @@ class BitfinexHistoricDataExporter:
 	def __init__(self, storage_folder, ccxt_obj):
 		self.storage_folder = storage_folder
 		self.exchange = ccxt_obj
+		self.exchange_name = ccxt_obj.__class__.__name__.split('.')[-1] # Example <class 'ccxt.binance.binance'>
 
 
 	def _storeCandles(self, pair, candle_size, request_window_start_time, candles):

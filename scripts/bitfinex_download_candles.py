@@ -12,18 +12,16 @@ sys.path.append(workspace_root)
 
 from src.bitfinexHistoricDataExporter import BitfinexHistoricDataExporter
 
-path_to_credentials = os.path.join(workspace_root, 'private', 'credentials_bitfinex.json')
-# Template of credentials_bitfinex.json:
-# {
-# 	"apiKey": "000000000000111111111111111100000000000000",
-# 	"secret": "aaaaaaaaaaaabbbbbbbbbbbbbbbbcccccccccccccc",
-# 	"password": ""
-# }
+exchange_name = 'bitfinex'
+path_to_credentials = os.path.join(workspace_root, 'private', 'credentials_%s.json' % exchange_name)
+# path_to_credentials = os.path.join(project_dir, 'config', 'credentials_%s.json' % exchange_name)
 if not os.path.exists(path_to_credentials):
 	raise Exception("ME: Please make sure that file containing Bitfinex API KEY and SECRET is stored at %s" %(path_to_credentials))
 
+
 with open(path_to_credentials) as f:
-	exchange_ccxt_obj = ccxt.bitfinex2(json.load(f))
+	method_to_call = getattr(ccxt, exchange_name)
+	exchange_ccxt_obj = method_to_call(json.load(f))
 
 
 data_folder = os.path.join(project_dir, 'data','downloads')
