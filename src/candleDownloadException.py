@@ -1,0 +1,2 @@
+class CandleDownloadException(Exception):
+	pass
