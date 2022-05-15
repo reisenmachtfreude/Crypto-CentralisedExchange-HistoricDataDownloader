@@ -19,9 +19,14 @@ classDiagram
     class bitfinex_download_candles_py{
 
     }
-    bitfinex_download_candles_py -- BitfinexHistoricDataExporter
+    bitfinex_download_candles_py -- HistoricDataExporter
 
-    class BitfinexHistoricDataExporter{
+    class binance_download_candles_py{
+
+    }
+    binance_download_candles_py -- HistoricDataExporter
+    
+    class HistoricDataExporter{
       downloadData(pair, start_date, end_date, candle_size_str):
     }
 
