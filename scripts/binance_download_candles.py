@@ -11,6 +11,7 @@ sys.path.append(project_dir)
 sys.path.append(workspace_root)
 
 from src.historicDataExporter import HistoricDataExporter
+from src.candleDownloadException import CandleDownloadException
 
 exchange_name = 'binance'
 path_to_credentials = os.path.join(workspace_root, 'private', 'credentials_%s.json' % exchange_name)
@@ -42,6 +43,10 @@ end_date =  datetime.datetime.strptime('2022-05-15 00:00:00', "%Y-%m-%d %H:%M:%S
 # Download candles for all currencies on the exchange
 pairs = exchange_ccxt_obj.loadMarkets()
 for pair in pairs:
-
-	downloader = HistoricDataExporter(data_folder, exchange_ccxt_obj, max_number_of_candles=10000)
-	downloader.downloadData(pair, start_date, end_date, candle_size_str='1m')
+	try:
+		# API Docs show Binance allows max 1000 candle sticks per response
+		# https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data
+		downloader = HistoricDataExporter(data_folder, exchange_ccxt_obj, max_number_of_candles=1000)
+		downloader.downloadData(pair, start_date, end_date, candle_size_str='1m')
+	except CandleDownloadException as e:
+		print(e)

@@ -4,6 +4,7 @@ import datetime
 import json
 import time
 
+from src.candleDownloadException import CandleDownloadException
 
 
 class HistoricDataExporter:
@@ -18,15 +19,13 @@ class HistoricDataExporter:
 
 	def downloadData(self, pair, start_date, end_date, candle_size_str):
 		print("Downloading data: symbol=%s, start_date=%s, end_date=%s" %(pair, start_date, end_date))
-
-		# Create folder to store all requested results
+		first_round = True
+		
 		folder_ident = self._getFolderIdent(pair=pair, candle_size=candle_size_str, start_date=start_date, end_date=end_date)
 		folder_full_path = os.path.join(self.storage_folder, folder_ident)
-		if not os.path.exists(folder_full_path):
-			os.mkdir(folder_full_path)
-		else:
-			raise Exception("ME: Please delete existing data folder: %s" % folder_full_path)
-
+		if os.path.exists(folder_full_path):
+			raise CandleDownloadException("Skipping download because data folder exists: Downloading data: symbol=%s, start_date=%s, end_date=%s" %(pair, start_date, end_date))
+		
 		# Iterate over time range
 		end_date_mts = end_date.timestamp() * 1000
 		start_date_mts = self.exchange.parse8601(start_date.isoformat())
@@ -34,8 +33,15 @@ class HistoricDataExporter:
 		request_window_start_time = start_date_mts
 		while request_window_start_time < end_date_mts:
 			candles = self.exchange.fetch_ohlcv(pair, timeframe=candle_size_str, since=request_window_start_time, limit=self.max_number_of_candles)
+			if len(candles) == 0:
+				raise CandleDownloadException("Exchange does not return any candle data: symbol=%s, start_date=%s, end_date=%s" %(pair, start_date, end_date))
 			print("Number of downloaded candles: %i " % len(candles))
 
+			# Create destination folder after first successful download
+			if first_round: 
+				os.mkdir(folder_full_path)
+				first_round = False
+				
 			self._storeCandles(folder_full_path, request_window_start_time, candles)
 			most_recent_received_candle_time = candles[-1][0]
 			print(most_recent_received_candle_time)
