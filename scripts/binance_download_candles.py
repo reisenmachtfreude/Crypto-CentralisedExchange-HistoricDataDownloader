@@ -30,14 +30,18 @@ with open(path_to_credentials) as f:
 	method_to_call = getattr(ccxt, exchange_name)
 	exchange_ccxt_obj = method_to_call(ccxt_parameters)
 
-exchange_ccxt_obj.fetch_balance()
+
 
 data_folder = os.path.join(project_dir, 'data','downloads')
-start_date = datetime.datetime.strptime('2017-01-10 00:00:00', "%Y-%m-%d %H:%M:%S")
-end_date = datetime.datetime.now()
+start_date = datetime.datetime.strptime('2022-01-01 00:00:00', "%Y-%m-%d %H:%M:%S")
+end_date =  datetime.datetime.strptime('2022-05-15 00:00:00', "%Y-%m-%d %H:%M:%S")
 
-pairs = ['BTCUSD']
+# Download all candles using a list of specific pairs
+# pairs = ['LUNA/BUSD'] 
+
+# Download candles for all currencies on the exchange
+pairs = exchange_ccxt_obj.loadMarkets()
 for pair in pairs:
 
 	downloader = HistoricDataExporter(data_folder, exchange_ccxt_obj, max_number_of_candles=10000)
-	downloader.downloadData('BTC/USDT', start_date, end_date, candle_size_str='1d')
+	downloader.downloadData(pair, start_date, end_date, candle_size_str='1m')
