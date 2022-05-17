@@ -34,8 +34,8 @@ classDiagram
     class bitfinex_convert_candles_py{
 
     }
-    bitfinex_convert_candles_py -- BitfinexHistoricCandleConverter
-    class BitfinexHistoricCandleConverter{
+    bitfinex_convert_candles_py -- HistoricCandleConverter
+    class HistoricCandleConverter{
         convertToPickle(pair, download_data_folder, pickle_data_folder)
         getAsDataframe(pickle_file)
     }	
