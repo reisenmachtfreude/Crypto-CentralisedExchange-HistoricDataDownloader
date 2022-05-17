@@ -15,6 +15,7 @@ Here is mine, which I tried to make as easy to understand as possible.
 
 ## Implementation
 ```mermaid
+%%{init: {'theme': 'neutral' } }%%
 classDiagram
     class bitfinex_download_candles_py{
 
