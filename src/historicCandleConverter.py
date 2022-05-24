@@ -32,7 +32,16 @@ class HistoricCandleConverter:
 		if not os.path.exists(pickle_file):
 			raise Exception("File not found: %s" % (pickle_file))
 
+		# Create dataframe from pickle file
 		all_json_object = pd.read_pickle(pickle_file)
 		df = pd.DataFrame.from_records(all_json_object)
+
+		# Add names for loaded columns
 		df.columns = ['TimestampInMilliseconds','Open','High','Low','Close','Volume']
+
+		# Add time-based index for dataframe
+		df['Date'] = (df['TimestampInMilliseconds'] / 1000).astype('int').astype("datetime64[s]")
+		df.set_index('Date',inplace = True)
+		df = df.sort_index(axis = 0)
+
 		return df
